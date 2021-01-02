@@ -4,7 +4,7 @@ from __future__ import print_function
 
 
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+#tf.disable_v2_behavior()
 #import tf.contrib.tf.contrib.slim as tf.contrib.slim
 #from tf.contrib import tf.contrib.slim
 import pdb
