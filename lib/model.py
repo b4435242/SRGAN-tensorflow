@@ -42,7 +42,7 @@ def data_loader(FLAGS):
             # image_list_LR_queue = tf.train.string_input_producer(image_list_LR, shuffle=False, capacity=FLAGS.name_queue_capacity)
             # image_list_HR_queue = tf.train.string_input_producer(image_list_HR, shuffle=False, capacity=FLAGS.name_queue_capacity)
             #print('[Queue] image list queue use shuffle: %s'%(FLAGS.mode == 'Train'))
-            output = tf.compat.v1.train.slice_input_producer([image_list_LR_tensor, image_list_HR_tensor],
+            output = tf.data.Dataset[image_list_LR_tensor, image_list_HR_tensor],
                                                    shuffle=False, capacity=FLAGS.name_queue_capacity)
 
             # Reading and decode the images
