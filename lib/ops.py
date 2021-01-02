@@ -3,10 +3,9 @@ from __future__ import division
 from __future__ import print_function
 
 
-import tensorflow.compat.v1 as tf
-#tf.disable_v2_behavior()
-#import tf.contrib.tf.contrib.slim as tf.contrib.slim
-#from tf.contrib import tf.contrib.slim
+import tensorflow as tf
+#import tf.contrib.tf.nn as tf.nn
+#from tf.contrib import tf.nn
 import pdb
 
 
@@ -37,10 +36,10 @@ def conv2(batch_input, kernel=3, output_channel=64, stride=1, use_bias=True, sco
     # kernel: An integer specifying the width and height of the 2D convolution window
     with tf.variable_scope(scope):
         if use_bias:
-            return tf.contrib.slim.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NHWC',
+            return tf.nn.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NHWC',
                             activation_fn=None, weights_initializer=tf.contrib.layers.xavier_initializer())
         else:
-            return tf.contrib.slim.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NHWC',
+            return tf.nn.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NHWC',
                             activation_fn=None, weights_initializer=tf.contrib.layers.xavier_initializer(),
                             biases_initializer=None)
 
@@ -50,10 +49,10 @@ def conv2_NCHW(batch_input, kernel=3, output_channel=64, stride=1, use_bias=True
     # kernel: list of 2 integer specifying the width and height of the 2D convolution window
     with tf.variable_scope(scope):
         if use_bias:
-            return tf.contrib.slim.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NCWH',
+            return tf.nn.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NCWH',
                                activation_fn=None, weights_initializer=tf.contrib.layers.xavier_initializer())
         else:
-            return tf.contrib.slim.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NCWH',
+            return tf.nn.conv2d(batch_input, output_channel, [kernel, kernel], stride, 'SAME', data_format='NCWH',
                                activation_fn=None, weights_initializer=tf.contrib.layers.xavier_initializer(),
                                biases_initializer=None)
 
@@ -74,7 +73,7 @@ def lrelu(inputs, alpha):
 
 
 def batchnorm(inputs, is_training):
-    return tf.contrib.slim.batch_norm(inputs, decay=0.9, epsilon=0.001, updates_collections=tf.GraphKeys.UPDATE_OPS,
+    return tf.nn.batch_norm(inputs, decay=0.9, epsilon=0.001, updates_collections=tf.GraphKeys.UPDATE_OPS,
                         scale=False, fused=True, is_training=is_training)
 
 
@@ -164,11 +163,11 @@ def vgg_arg_scope(weight_decay=0.0005):
   Returns:
     An arg_scope.
   """
-  with tf.contrib.slim.arg_scope([tf.contrib.slim.conv2d, tf.contrib.slim.fully_connected],
+  with tf.nn.arg_scope([tf.nn.conv2d, tf.nn.fully_connected],
                       activation_fn=tf.nn.relu,
-                      weights_regularizer=tf.contrib.slim.l2_regularizer(weight_decay),
+                      weights_regularizer=tf.nn.l2_regularizer(weight_decay),
                       biases_initializer=tf.zeros_initializer()):
-    with tf.contrib.slim.arg_scope([tf.contrib.slim.conv2d], padding='SAME') as arg_sc:
+    with tf.nn.arg_scope([tf.nn.conv2d], padding='SAME') as arg_sc:
       return arg_sc
 
 
@@ -204,21 +203,21 @@ def vgg_19(inputs,
   with tf.variable_scope(scope, 'vgg_19', [inputs], reuse=reuse) as sc:
     end_points_collection = sc.name + '_end_points'
     # Collect outputs for conv2d, fully_connected and max_pool2d.
-    with tf.contrib.slim.arg_scope([tf.contrib.slim.conv2d, tf.contrib.slim.fully_connected, tf.contrib.slim.max_pool2d],
+    with tf.nn.arg_scope([tf.nn.conv2d, tf.nn.fully_connected, tf.nn.max_pool2d],
                         outputs_collections=end_points_collection):
-      net = tf.contrib.slim.repeat(inputs, 2, tf.contrib.slim.conv2d, 64, 3, scope='conv1', reuse=reuse)
-      net = tf.contrib.slim.max_pool2d(net, [2, 2], scope='pool1')
-      net = tf.contrib.slim.repeat(net, 2, tf.contrib.slim.conv2d, 128, 3, scope='conv2',reuse=reuse)
-      net = tf.contrib.slim.max_pool2d(net, [2, 2], scope='pool2')
-      net = tf.contrib.slim.repeat(net, 4, tf.contrib.slim.conv2d, 256, 3, scope='conv3', reuse=reuse)
-      net = tf.contrib.slim.max_pool2d(net, [2, 2], scope='pool3')
-      net = tf.contrib.slim.repeat(net, 4, tf.contrib.slim.conv2d, 512, 3, scope='conv4',reuse=reuse)
-      net = tf.contrib.slim.max_pool2d(net, [2, 2], scope='pool4')
-      net = tf.contrib.slim.repeat(net, 4, tf.contrib.slim.conv2d, 512, 3, scope='conv5',reuse=reuse)
-      net = tf.contrib.slim.max_pool2d(net, [2, 2], scope='pool5')
+      net = tf.nn.repeat(inputs, 2, tf.nn.conv2d, 64, 3, scope='conv1', reuse=reuse)
+      net = tf.nn.max_pool2d(net, [2, 2], scope='pool1')
+      net = tf.nn.repeat(net, 2, tf.nn.conv2d, 128, 3, scope='conv2',reuse=reuse)
+      net = tf.nn.max_pool2d(net, [2, 2], scope='pool2')
+      net = tf.nn.repeat(net, 4, tf.nn.conv2d, 256, 3, scope='conv3', reuse=reuse)
+      net = tf.nn.max_pool2d(net, [2, 2], scope='pool3')
+      net = tf.nn.repeat(net, 4, tf.nn.conv2d, 512, 3, scope='conv4',reuse=reuse)
+      net = tf.nn.max_pool2d(net, [2, 2], scope='pool4')
+      net = tf.nn.repeat(net, 4, tf.nn.conv2d, 512, 3, scope='conv5',reuse=reuse)
+      net = tf.nn.max_pool2d(net, [2, 2], scope='pool5')
       # Use conv2d instead of fully_connected layers.
       # Convert end_points_collection into a end_point dict.
-      end_points = tf.contrib.slim.utils.convert_collection_to_dict(end_points_collection)
+      end_points = tf.nn.utils.convert_collection_to_dict(end_points_collection)
 
       return net, end_points
 vgg_19.default_image_size = 224
