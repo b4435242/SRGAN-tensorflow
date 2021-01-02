@@ -9,8 +9,8 @@ CUDA_VISIBLE_DEVICES=0 python main.py \
     --flip True \
     --random_crop True \
     --crop_size 24 \
-    --input_dir_LR ./data/RAISE_LR/ \
-    --input_dir_HR ./data/RAISE_HR/ \
+    --input_dir_LR ./data/training_lr_images/ \
+    --input_dir_HR ./data/training_hr_images/ \
     --num_resblock 16 \
     --perceptual_mode VGG54 \
     --name_queue_capacity 4096 \
