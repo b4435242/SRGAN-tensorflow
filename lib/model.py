@@ -2,8 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-#import tensorflow as tf
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
+#import tensorflow.compat.v1 as tf
 from lib.ops import *
 import collections
 import os
@@ -37,7 +37,7 @@ def data_loader(FLAGS):
         image_list_LR_tensor = tf.convert_to_tensor(image_list_LR, dtype=tf.string)
         image_list_HR_tensor = tf.convert_to_tensor(image_list_HR, dtype=tf.string)
 
-        with tf.variable_scope('load_image'):
+        with tf.compat.v1.variable_scope('load_image'):
             # define the image list queue
             # image_list_LR_queue = tf.train.string_input_producer(image_list_LR, shuffle=False, capacity=FLAGS.name_queue_capacity)
             # image_list_HR_queue = tf.train.string_input_producer(image_list_HR, shuffle=False, capacity=FLAGS.name_queue_capacity)
